@@ -1,6 +1,7 @@
 package com.example.administrator.coolweather.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.administrator.coolweather.db.City;
 import com.example.administrator.coolweather.db.County;
