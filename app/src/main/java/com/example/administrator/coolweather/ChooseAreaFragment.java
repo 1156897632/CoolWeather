@@ -1,6 +1,7 @@
 package com.example.administrator.coolweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -63,6 +64,7 @@ public class ChooseAreaFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //创建视图
         View view = inflater.inflate(R.layout.choose_area,container,false);
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
@@ -79,17 +81,27 @@ public class ChooseAreaFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE){
+                    //省级视图，点击切换市级视图
                     selectedProvince = provinceList.get(position);
                     queryCities();
                 }else if (currentLevel == LEVEL_CITY){
+                    //市级视图，点击切换县级视图
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY){
+                    //县级视图，点击切换天气活动并finish当前活动
+                    String weatherid = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherid);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //判断当前视图级别，对返回按钮做不同逻辑
                 if (currentLevel == LEVEL_COUNTY){
                     queryCities();
                 }else if (currentLevel == LEVEL_CITY){
@@ -107,8 +119,10 @@ public class ChooseAreaFragment extends Fragment {
     private void queryProvinces(){
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
+        //从数据库中获取数据
         provinceList = DataSupport.findAll(Province.class);
         if (provinceList.size()>0){
+            //数据库中有数据
             dataList.clear();
             for (Province province:provinceList) {
                 dataList.add(province.getProvinceName());
