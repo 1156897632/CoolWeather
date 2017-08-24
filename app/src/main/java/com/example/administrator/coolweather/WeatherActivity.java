@@ -1,5 +1,6 @@
 package com.example.administrator.coolweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.administrator.coolweather.gson.Forecast;
 import com.example.administrator.coolweather.gson.Weather;
+import com.example.administrator.coolweather.service.AutoUpdateService;
 import com.example.administrator.coolweather.util.HttpUtil;
 import com.example.administrator.coolweather.util.Utility;
 
@@ -33,8 +35,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private final static String TAG = "TAG";
 
-    private final static String KEY = "33fe13885ff5489ebc888fca87ece6fc";
-    private final static String BASE_URL = "http://guolin.tech/api/weather?cityid=";
+    public final static String KEY = "33fe13885ff5489ebc888fca87ece6fc";
+    public final static String BASE_URL = "http://guolin.tech/api/weather?cityid=";
 
     public DrawerLayout drawerLayout;
     private Button navButton;
@@ -61,7 +63,6 @@ public class WeatherActivity extends AppCompatActivity {
         initView();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather",null);
-        Log.d(TAG, "weatherString: "+weatherString);
         if (weatherString!=null){
             //缓存
             Weather weather = Utility.handleWeatherResponse(weatherString);
@@ -84,7 +85,6 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d(TAG, "mWeatherId: "+mWeatherId);
                 requestWeather(mWeatherId);
             }
         });
@@ -211,6 +211,9 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+//        Intent intent = new Intent(this, AutoUpdateService.class);
+//        startService(intent);
+//        stopService(intent);
     }
 
 }
